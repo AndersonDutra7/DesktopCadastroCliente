@@ -34,12 +34,12 @@ class DataBase:
             COMPLEMENTO TEXT,
             BAIRRO TEXT,
             MUNICIPIO TEXT,
-            ESTADO TEXT
+            ESTADO TEXT,
 
             PRIMARY KEY(CPF)
             );
             """)
-        self.connection()
+        self.close_connection()
 
     def registrar_cliente(self, cliente=Cliente):
         self.connect()
@@ -47,7 +47,7 @@ class DataBase:
         campos_cliente = ('CPF', 'NOME', 'TELEFONE_FIXO', 'TELEFONE_CELULAR', 'SEXO', 'CEP', 'LOGRADOURO',
                           'NUMERO', 'COMPLEMENTO', 'BAIRRO', 'MUNICIPIO', 'ESTADO')
         valores = f" '{str(cliente.cpf)}.replace('.','').replace('-','')', '{cliente.nome}', '{cliente.telefone_fixo}', " \
-                  f" '{cliente.telefone_celular}', '{cliente.sexo}', '{cliente.cep}', '{cliente.lodradouro}', '{cliente.numero}', " \
+                  f" '{cliente.telefone_celular}', '{cliente.sexo}', '{cliente.cep}', '{cliente.logradouro}', '{cliente.numero}', " \
                   f" '{cliente.complemento}', '{cliente.bairro}', '{cliente.municipio}', '{cliente.estado}'"
 
         try:
@@ -74,10 +74,11 @@ class DataBase:
         self.connect()
         try:
             cursor = self.connection.cursor()
-            cursor.execute(f"""" DELETE * FROM CLIENTE WHERE CPF = '{str(cpf)}.replace('.','').replace('-','')' """)
-            return cursor.fetchone()
+            cursor.execute(f""" DELETE * FROM CLIENTE WHERE CPF = '{str(cpf)}.replace('.','').replace('-','')' """)
+            self.connection.commit()
+            return 'ok'
         except sqlite3.Error as e:
-            return None
+            print(e)
         finally:
             self.close_connection()
     def atualizar_cliente(self, cliente=Cliente):

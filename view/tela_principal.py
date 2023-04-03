@@ -1,6 +1,8 @@
 import requests
 import json
 import sys
+
+from PySide6 import QtWidgets
 from PySide6.QtWidgets import (QMainWindow, QVBoxLayout, QComboBox, QLabel, QLineEdit, QWidget, QPushButton, QMessageBox, QSizePolicy)
 
 from model.cliente import Cliente
@@ -75,5 +77,47 @@ class MainWindow(QMainWindow):
 
         self.container = QWidget()
         self.container.setSizePolicy(QSizePolicy.Expanding)
+        self.container.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setCentralWidget(self.container)
         self.container.setLayout(layout)
+
+        self.btn_remover.setVisible(False)
+        self.btn_salvar.clicked.connect(self.salvar_cliente)
+
+    def salvar_cliente(self):
+        db = DataBase()
+
+        cliente = Cliente(
+            cpf=self.txt_cpf.text(),
+            nome=self.txt_nome.text(),
+            telefone_fixo=self.txt_telefone_fixo.text(),
+            telefone_celular=self.txt_telefone_celular.text(),
+            sexo=self.cb_sexo.currentText(),
+            cep=self.txt_cep.text(),
+            logradouro=self.txt_logradouro.text(),
+            numero=self.txt_numero.text(),
+            complemento=self.txt_complemento.text(),
+            bairro=self.txt_bairro.text(),
+            municipio=self.txt_municipio.text(),
+            estado=self.txt_estado.text()
+        )
+        retorno = db.registrar_cliente(cliente)
+
+        if retorno == 'ok':
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setWindowTitle('Cadastro Realizado ')
+            msg.setText('Cadastro realizado com sucesso')
+            msg.exec()
+        elif 'UNIQUE constraint failed: ' in retorno[0]:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setWindowTitle('Erro ao cadastrar')
+            msg.setText(f'O CPF {self.txt_cpf} já tem cadastro')
+            msg.exec()
+        else:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setWindowTitle('Erro ao cadastrar ')
+            msg.setText('Erro ao cadastrar verfique os dados inseridos')
+            msg.exec()
