@@ -101,6 +101,6 @@ class DataBase:
             self.connection.commit()
             return 'Ok'
         except sqlite3.Error as e:
-            return None
+            return str(e)
         finally:
             self.close_connection()
