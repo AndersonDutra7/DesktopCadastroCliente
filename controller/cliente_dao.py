@@ -43,10 +43,10 @@ class DataBase:
 
     def registrar_cliente(self, cliente=Cliente):
         self.connect()
-        cursor = self.connection(self)
+        cursor = self.connection.cursor()
         campos_cliente = ('CPF', 'NOME', 'TELEFONE_FIXO', 'TELEFONE_CELULAR', 'SEXO', 'CEP', 'LOGRADOURO',
                           'NUMERO', 'COMPLEMENTO', 'BAIRRO', 'MUNICIPIO', 'ESTADO')
-        valores = f" '{str(cliente.cpf)}.replace('.','').replace('-','')', '{cliente.nome}', '{cliente.telefone_fixo}', " \
+        valores = f" '{str(cliente.cpf).replace('.','').replace('-','')}', '{cliente.nome}', '{cliente.telefone_fixo}', " \
                   f" '{cliente.telefone_celular}', '{cliente.sexo}', '{cliente.cep}', '{cliente.logradouro}', '{cliente.numero}', " \
                   f" '{cliente.complemento}', '{cliente.bairro}', '{cliente.municipio}', '{cliente.estado}'"
 
@@ -55,7 +55,7 @@ class DataBase:
             self.connection.commit()
             return 'Ok'
         except sqlite3.Error as e:
-            print(e)
+            return str(e)
         finally:
             self.close_connection()
 
@@ -63,7 +63,7 @@ class DataBase:
         self.connect()
         try:
             cursor = self.connection.cursor()
-            cursor.execute(f"""SELECT * FROM CLIENTE WHERE CPF = '{str(cpf)}.replace('.','').replace('-','')' """)
+            cursor.execute(f"""SELECT * FROM CLIENTE WHERE CPF = '{str(cpf).replace('.','').replace('-','')}' """)
             return cursor.fetchone()
         except sqlite3.Error as e:
             return None
@@ -74,14 +74,14 @@ class DataBase:
         self.connect()
         try:
             cursor = self.connection.cursor()
-            cursor.execute(f""" DELETE * FROM CLIENTE WHERE CPF = '{str(cpf)}.replace('.','').replace('-','')' """)
+            cursor.execute(f""" DELETE FROM CLIENTE WHERE CPF = '{str(cpf).replace('.','').replace('-','')}' """)
             self.connection.commit()
-            return 'ok'
+            return 'Ok'
         except sqlite3.Error as e:
             print(e)
         finally:
             self.close_connection()
-    def atualizar_cliente(self, cliente=Cliente):
+    def atualizar_cliente(self, cliente = Cliente):
         self.connect()
         try:
             cursor = self.connection.cursor()
