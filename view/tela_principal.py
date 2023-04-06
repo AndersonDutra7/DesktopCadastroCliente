@@ -87,6 +87,8 @@ class MainWindow(QMainWindow):
         self.btn_remover.setVisible(False)
         self.btn_salvar.clicked.connect(self.salvar_cliente)
         self.txt_cpf.editingFinished.connect(self.consultar_cliente)
+        self.txt_cep.editingFinished.connect(self.consultar_enderecos)
+        self.btn_salvar.clicked.connect(self.salvar_cliente)
         self.btn_remover.clicked.connect(self.remover_cliente)
         self.btn_limpar.clicked.connect(self.limpar_campos)
 
@@ -205,3 +207,20 @@ class MainWindow(QMainWindow):
                 widget.setCurrentIndex(0)
         self.btn_remover.setVisible(False)
         self.btn_salvar.setText('Salvar')
+
+    def consultar_enderecos(self):
+        url = f'https://viacep.com.br/ws/{str(self.txt_cep.text()).replace(".","").replace("-","")}/json/'
+        response = requests.get(url)
+        endereco = json.loads(response.text)
+
+        if response.status_code == 200 and 'erro' not in endereco:
+            self.txt_logradouro.setText(endereco['logradouro'])
+            self.txt_bairro.setText(endereco['bairro'])
+            self.txt_municipio.setText(endereco['localidade'])
+            self.txt_estado.setText(endereco['uf'])
+        else:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setWindowTitle('Consultar CEP')
+            msg.setText('Erro ao consultar CEP, verifique os dados inseridos.')
+            msg.exec()
