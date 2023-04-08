@@ -4,7 +4,7 @@ from model.cliente import Cliente
 
 
 class DataBase:
-    def __init__(self, nome='system.db'):
+    def __init__(self, nome = 'system.db'):
         self.connection = None
         self.name = nome
 
