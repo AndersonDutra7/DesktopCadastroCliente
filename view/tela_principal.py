@@ -99,7 +99,6 @@ class MainWindow(QMainWindow):
         self.btn_salvar.clicked.connect(self.salvar_cliente)
         self.txt_cpf.editingFinished.connect(self.consultar_cliente)
         self.txt_cep.editingFinished.connect(self.consultar_enderecos)
-        self.btn_salvar.clicked.connect(self.salvar_cliente)
         self.btn_remover.clicked.connect(self.remover_cliente)
         self.btn_limpar.clicked.connect(self.limpar_campos)
         self.tabela_clientes.cellDoubleClicked.connect(self.carrega_dados)
