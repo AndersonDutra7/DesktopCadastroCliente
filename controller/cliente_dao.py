@@ -70,6 +70,18 @@ class DataBase:
         finally:
             self.close_connection()
 
+    def consulta_todos_clientes(self):
+        self.connect()
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(f"""SELECT * FROM CLIENTE""")
+            clientes = cursor.fetchall()
+            return clientes
+        except sqlite3.Error as e:
+            return None
+        finally:
+            self.close_connection()
+
     def delete_cliente(self, cpf):
         self.connect()
         try:
